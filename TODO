@@ -1,0 +1,20 @@
+Commands:
+
+images
+packages, sizes
+
+tags
+ -> affect firewall rules
+
+create
+  size
+  image
+  network (w/ default)
+  alias
+
+destroy
+  id
+
+show
+  id
+
