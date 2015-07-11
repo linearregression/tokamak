@@ -36,4 +36,11 @@ cpan
 > exit
 
 export PATH=/opt/local/lib/perl5/site_perl/bin:/opt/chef/bin
+
+git clone git@github.com:helium/tokamak.git
+cd tokamak
+carton install
+cd local/lib/perl5
+ln -s ../../../lib/Tokamak* .
+cd ../../..
 ```
