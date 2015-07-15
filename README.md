@@ -7,14 +7,18 @@
 ## Usage
 
 ```
-carton ./tokamak ps
+carton exec ./tokamak ps
 ```
 
 See https://gist.github.com/bdha/ba7ce117cb246eeed0fc for examples.
 
 ## Requirements
 
-`tokamak` requires access to SDC and Helium's Chef account. Nominally this means you have an `~/.sdcrc` and `~/.chef/knife.rb` set up.
+`tokamak` requires access to SDC and Helium's Chef account.
+
+You must configure `~/.tokamakrc` to contain your SDC auth information. You will need to have a working SDC SSH key on the system you are running `tokamak` on.
+
+You must have a working Chef setup for the Helium Hosted Chef account.
 
 ## Development
 
