@@ -1,0 +1,12 @@
+[core]
+  sdc_default = sdc_prod
+
+[sdc_prod]
+  SDC_URL = https://cloudapi.example.com
+  SDC_ACCOUNT = example_prod
+  SDC_KEY_ID = <YOUR PROD KEY>
+
+[sdc_dev]
+  SDC_URL = https://cloudapi.example.com
+  SDC_ACCOUNT = example_dev
+  SDC_KEY_ID = <YOUR DEV KEY>

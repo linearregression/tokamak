@@ -1,3 +1,3 @@
 requires 'App::Cmd';
 requires 'Text::Table';
-requires 'Data::Printer';
+requires 'Config::INI';

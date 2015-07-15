@@ -96,6 +96,18 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Class-Method-Modifiers-2.11
+    pathname: E/ET/ETHER/Class-Method-Modifiers-2.11.tar.gz
+    provides:
+      Class::Method::Modifiers 2.11
+    requirements:
+      B 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      base 0
+      strict 0
+      warnings 0
   Clone-PP-1.06
     pathname: N/NE/NEILB/Clone-PP-1.06.tar.gz
     provides:
@@ -107,6 +119,18 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Config-GitLike-1.16
+    pathname: A/AL/ALEXMV/Config-GitLike-1.16.tar.gz
+    provides:
+      Config::GitLike 1.16
+      Config::GitLike::Cascaded undef
+      Config::GitLike::Git undef
+    requirements:
+      ExtUtils::MakeMaker 6.59
+      Moo 0
+      MooX::Types::MooseLike 0
+      Test::Exception 0
+      perl 5.008
   Data-OptList-0.109
     pathname: R/RJ/RJBS/Data-OptList-0.109.tar.gz
     provides:
@@ -141,6 +165,15 @@ DISTRIBUTIONS
       Term::ANSIColor 3
       Test::More 0.88
       version 0.77
+  Devel-GlobalDestruction-0.13
+    pathname: H/HA/HAARG/Devel-GlobalDestruction-0.13.tar.gz
+    provides:
+      Devel::GlobalDestruction 0.13
+    requirements:
+      ExtUtils::CBuilder 0.27
+      ExtUtils::MakeMaker 0
+      Sub::Exporter::Progressive 0.001011
+      perl 5.006
   Dist-CheckConflicts-0.11
     pathname: D/DO/DOY/Dist-CheckConflicts-0.11.tar.gz
     provides:
@@ -298,6 +331,45 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Moo-2.000001
+    pathname: H/HA/HAARG/Moo-2.000001.tar.gz
+    provides:
+      Method::Generate::Accessor undef
+      Method::Generate::BuildAll undef
+      Method::Generate::Constructor undef
+      Method::Generate::DemolishAll undef
+      Method::Inliner undef
+      Moo 2.000001
+      Moo::HandleMoose undef
+      Moo::HandleMoose::FakeConstructor undef
+      Moo::HandleMoose::FakeMetaClass undef
+      Moo::HandleMoose::_TypeMap undef
+      Moo::Object undef
+      Moo::Role 2.000001
+      Moo::_Utils undef
+      Moo::_mro undef
+      Moo::_strictures undef
+      Moo::sification undef
+      Sub::Defer 2.000001
+      Sub::Quote 2.000001
+      oo undef
+    requirements:
+      Class::Method::Modifiers 1.1
+      Devel::GlobalDestruction 0.11
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      Module::Runtime 0.014
+      Role::Tiny 2
+      Scalar::Util 0
+      perl 5.006
+  MooX-Types-MooseLike-0.29
+    pathname: M/MA/MATEU/MooX-Types-MooseLike-0.29.tar.gz
+    provides:
+      MooX::Types::MooseLike 0.29
+      MooX::Types::MooseLike::Base 0.29
+    requirements:
+      ExtUtils::MakeMaker 0
+      Module::Runtime 0.014
   Package-Stash-0.37
     pathname: D/DO/DOY/Package-Stash-0.37.tar.gz
     provides:
@@ -361,6 +433,14 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Role-Tiny-2.000001
+    pathname: H/HA/HAARG/Role-Tiny-2.000001.tar.gz
+    provides:
+      Role::Tiny 2.000001
+      Role::Tiny::With 2.000001
+    requirements:
+      Exporter 5.57
+      perl 5.006
   Sort-Naturally-1.03
     pathname: B/BI/BINGOS/Sort-Naturally-1.03.tar.gz
     provides:
@@ -391,6 +471,13 @@ DISTRIBUTIONS
       Sub::Install 0.92
       strict 0
       warnings 0
+  Sub-Exporter-Progressive-0.001011
+    pathname: F/FR/FREW/Sub-Exporter-Progressive-0.001011.tar.gz
+    provides:
+      Sub::Exporter::Progressive 0.001011
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.88
   Sub-Install-0.928
     pathname: R/RJ/RJBS/Sub-Install-0.928.tar.gz
     provides:
@@ -400,6 +487,33 @@ DISTRIBUTIONS
       Carp 0
       ExtUtils::MakeMaker 6.30
       Scalar::Util 0
+      strict 0
+      warnings 0
+  Sub-Uplevel-0.25
+    pathname: D/DA/DAGOLDEN/Sub-Uplevel-0.25.tar.gz
+    provides:
+      Sub::Uplevel 0.25
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      constant 0
+      perl 5.006
+      strict 0
+      warnings 0
+  Test-Exception-0.40
+    pathname: E/EX/EXODIST/Test-Exception-0.40.tar.gz
+    provides:
+      Test::Exception 0.40
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Sub::Uplevel 0.18
+      Test::Builder 0.7
+      Test::Builder::Tester 1.07
+      Test::Harness 2.03
+      base 0
+      perl 5.006001
       strict 0
       warnings 0
   Text-Aligner-0.12
