@@ -26,43 +26,78 @@ my %machine_types;
 $machine_types{ smartmachine   } = "OS";
 $machine_types{ virtualmachine } = "VM";
 
+my %images;
+my $chef_metadata;
+
+sub get_image {
+  my $image_uuid = shift;
+
+  my $image_json = JSON->new->utf8->pretty->allow_nonref;
+
+  unless ( exists $images{ $image_uuid } ) {
+    my $image_cmd  = `sdc-getimage $image_uuid 2> /dev/null`; 
+
+    my $image_text;
+
+    if ( $? == 0 ) {
+      my $image   = $image_json->decode( $image_cmd );
+      $images{ $image_uuid } = $image->{name} . ":" . $image->{version};
+    }
+    else {
+      $images{ $image_uuid } = "-";
+    } 
+  }
+}
+
 sub chef_role {
-   my $ip = shift;
+  my $ip = shift;
 
-   my $json = JSON->new->utf8->pretty->allow_nonref;
+  my $role     = "-";
+  my $chef_env = "-";
 
-   my $cmd = `knife search 'ipaddress:$ip' -F json -a run_list -a chef_environment -c /etc/chef/client.rb 2> /dev/null`;
+  if ( $chef_metadata->{results} ) {
+    my $i = 0;
+    for ( $i .. $chef_metadata->{results} ) {
+      foreach my $key ( keys %{$chef_metadata->{rows}[$i]} ) {
+        if ( $chef_metadata->{rows}[$i]->{$key}->{ipaddress} eq $ip ) {
+          if ( $chef_metadata->{rows}[$i]->{$key}->{role}[0] ) {
+            $role = $chef_metadata->{rows}[$i]->{$key}->{role}[0];
 
-   my $chef      = $json->decode( $cmd );
+            $role =~ s/role\[//g;
+            $role =~ s/\]//g;
+          }
 
-   my $run_list;
-   my $chef_env;
+          if ( $chef_metadata->{rows}[$i]->{$key}->{chef_environment} ) {
+            $chef_env = $chef_metadata->{rows}[$i]->{$key}->{chef_environment};
+          }
 
-   if ( $chef->{results} ) {
-     foreach my $key ( keys %{$chef->{rows}[0]} ) {
-       $run_list = $chef->{rows}[0]->{$key}->{run_list}[0];
+          return ( $role, $chef_env );
+         }
 
-       if ( $run_list ) {
-         $run_list =~ s/role\[//g;
-         $run_list =~ s/\]//g;
        }
-       else { $run_list = "-"; }
+    $i++;
+    } 
+  }
 
-       $chef_env = $chef->{rows}[0]->{$key}->{chef_environment};
-     }
-   }
-   else {
-     $run_list = "-";
-     $chef_env = "-";
-   }
+  return ( $role, $chef_env );
+}
 
-   return ( $run_list, $chef_env );
+sub chef_metadata {
+  my $chef_search = qx/ knife search \'ipaddress:*\' -F json -a role -a chef_environment -a ipaddress/;
+  my $json = JSON->new->utf8->pretty->allow_nonref;
+  $chef_metadata = $json->decode( $chef_search );
+}
+
+sub sdc_machines {
+  my $machine_list = qx/ sdc-listmachines /;
+  my $json = JSON->new->utf8->pretty->allow_nonref;
+  my $out = $json->decode( $machine_list );
+  return $out;
 }
 
 sub execute {
   my ($self, $opt, $args) = @_;
 
-  my $json = JSON->new->utf8->pretty->allow_nonref;
   my $tb;
 
   if ( $opt->all ) {
@@ -72,12 +107,11 @@ sub execute {
     $tb   = Text::Table->new( "UUID", "TYPE", "RAM", "IMAGE", "ALIAS", "IP", "ROLE" );
   }
 
-  my $machine_list = qx/ sdc-listmachines /;
+  chef_metadata();
 
-  my $out = $json->decode( $machine_list );
+  my $machines = sdc_machines();
 
-  foreach my $vm ( @{$out} ) {
-
+  foreach my $vm ( @{$machines} ) {
     # Skip containers that aren't running, unless called verbosely.
     if ( $vm->{state} ne "running" and !$opt->all ) { next; }
 
@@ -87,22 +121,9 @@ sub execute {
       $firewall = "Y";
     }
 
-    my ( $run_list, $chef_env ) = chef_role( $vm->{primaryIp} );
+    my ( $role, $chef_env ) = chef_role( $vm->{primaryIp} );
 
-    my $image_uuid = $vm->{image};
-
-    my $image_json = JSON->new->utf8->pretty->allow_nonref;
-    my $image_cmd  = `sdc-getimage $image_uuid 2> /dev/null`; 
-
-    my $image_text;
-
-    if ( $? == 0 ) {
-      my $image   = $image_json->decode( $image_cmd );
-      $image_text = $image->{name} . ":" . $image->{version};
-    }
-    else {
-      $image_text = "-";
-    } 
+    get_image( $vm->{ image } );
 
     if ( $opt->all ) {
       $tb->add(
@@ -110,13 +131,12 @@ sub execute {
         $machine_types{ $vm->{type} },
         $vm->{memory},
         $vm->{package},
-        $image_text,
+        $images{ $vm->{ image } },
         $firewall,
         $vm->{state},
         $vm->{name},
         $vm->{primaryIp},
-        $run_list,
-        $chef_env,
+        $role,
       );
     }
     else {
@@ -124,10 +144,10 @@ sub execute {
         $vm->{id},
         $machine_types{ $vm->{type} },
         $vm->{memory},
-        $image_text,
+        $images{ $vm->{ image } },
         $vm->{name},
         $vm->{primaryIp},
-        $run_list,
+        $role,
       );
     
     }
