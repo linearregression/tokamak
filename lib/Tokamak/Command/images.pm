@@ -20,7 +20,7 @@ Tokamak::Command::images - list available container images
 # This might make more sense to store in a Chef databag, so we don't have to
 # update tokamak everywhere everytime we update an image.
 my @image_whitelist = (
-  "5a4ba06a-c1bb-11e4-af0b-4be0ce4ce04c", # minimal-64-lts 14.4.0
+  "b67492c2-055c-11e5-85d8-8b039ac981ec", # base-64-lts    14.4.2
   "39f29a9e-cd82-11e4-bd38-0fed3261fa5f", # elasticsearch  14.4.0
   "5683089c-d18d-11e4-b067-9f59180479b9", # mongodb        14.4.0
   "e312a72c-0a18-11e5-9a87-9ba4a03d4234", # postgresql     15.1.1
