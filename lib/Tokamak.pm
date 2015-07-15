@@ -27,7 +27,7 @@ $ENV{SDC_ACCOUNT} = $config_hash->{ $sdc_default }->{ SDC_ACCOUNT };
 $ENV{SDC_URL}     = $config_hash->{ $sdc_default }->{ SDC_URL };
 $ENV{SDC_KEY_ID}  = $config_hash->{ $sdc_default }->{ SDC_KEY_ID };
 
-print "SDC:   " . $ENV{SDC_ACCOUNT} . " @ " . $ENV{SDC_URL} . "\n";
+print "% " . $ENV{SDC_ACCOUNT} . " @ " . $ENV{SDC_URL} . "\n";
 print "\n";
 
 sub plugin_search_path {
