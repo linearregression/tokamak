@@ -48,7 +48,7 @@ sub execute {
       print ".";
     }
     else {
-      print $obj->{state} . ".\n";
+      print "done.\n";
       last;
     }
 

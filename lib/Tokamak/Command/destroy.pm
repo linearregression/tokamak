@@ -53,7 +53,7 @@ sub execute {
       print ".";
     }
     else {
-      print "destroyed.\n";
+      print "done.\n";
       last;
     }
 
