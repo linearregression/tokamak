@@ -11,7 +11,6 @@ Tokamak
 =cut
 
 print "SDC:   " . $ENV{SDC_ACCOUNT} . " @ " . $ENV{SDC_URL} . "\n";
-print "Chef:  /etc/chef/client.rb\n";
 print "\n";
 
 sub plugin_search_path {
