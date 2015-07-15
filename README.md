@@ -7,7 +7,21 @@
 ## Usage
 
 ```
-carton exec ./tokamak ps
+$ carton exec ./tokamak
+SDC:   helium_dev @ https://cloudapi.helium.systems
+
+tokamak <command>
+
+Available commands:
+
+  commands: list the application's commands
+      help: display a command's help screen
+
+        ps: list containers
+     roles: list roles defined in Chef
+     start: start a container
+      stop: stop a container
+    verify: verify your admin config
 ```
 
 See https://gist.github.com/bdha/ba7ce117cb246eeed0fc for examples.
@@ -16,15 +30,17 @@ See https://gist.github.com/bdha/ba7ce117cb246eeed0fc for examples.
 
 `tokamak` requires access to SDC and Helium's Chef account.
 
-You must configure `~/.tokamakrc` to contain your SDC auth information. You will need to have a working SDC SSH key on the system you are running `tokamak` on.
-
 You must have a working Chef setup for the Helium Hosted Chef account.
 
-## Development
+## Configuration
+
+You must configure `~/.tokamakrc` to contain your SDC auth information. You will need to have a working SDC SSH key on the system you are running `tokamak` on.
+
+See `tokamakrc.example`.
+
+## Installation
 
 `tokamak` is written in Perl, utilizing `App::Cmd` and `Carton` to deliver a bundled, easy to develop program.
-
-Beyond simply adding features, `tokamak` needs to be converged from usng the SDC CLI tools to hitting the SDC API directly. `tokamak` executes `node` twice for every container lookup, which gets Very Slow.
 
 On SmartOS, the following will get you ready to hack on `tokamak`:
 
