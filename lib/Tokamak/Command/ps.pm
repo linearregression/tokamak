@@ -7,6 +7,8 @@ use warnings;
 use JSON;
 use Text::Table;
 
+use Data::Printer;
+
 =head1 NAME
 
 Tokamak::Command::ps - list containers
@@ -22,31 +24,30 @@ sub validate_args {
 }
 
 my %machine_types;
+my %images;
+my $chef_metadata;
+my $sdc_images;
 
 $machine_types{ smartmachine   } = "OS";
 $machine_types{ virtualmachine } = "VM";
 
-my %images;
-my $chef_metadata;
-
 sub get_image {
   my $image_uuid = shift;
 
-  my $image_json = JSON->new->utf8->pretty->allow_nonref;
+  my $image_text = "-";
+  my $images_num = $#{$sdc_images};
+  my $i = 0;
 
-  unless ( exists $images{ $image_uuid } ) {
-    my $image_cmd  = `sdc-getimage $image_uuid 2> /dev/null`; 
-
-    my $image_text;
-
-    if ( $? == 0 ) {
-      my $image   = $image_json->decode( $image_cmd );
-      $images{ $image_uuid } = $image->{name} . ":" . $image->{version};
+  for ( $i .. $images_num ) {
+    if ( $sdc_images->[$i]->{id} eq $image_uuid ) {
+      $image_text = $sdc_images->[$i]->{name} . ":" . $sdc_images->[$i]->{version};
+      return $image_text;
     }
-    else {
-      $images{ $image_uuid } = "-";
-    } 
+
+    $i++;
   }
+
+  return $image_text;
 }
 
 sub chef_role {
@@ -88,6 +89,12 @@ sub chef_metadata {
   $chef_metadata = $json->decode( $chef_search );
 }
 
+sub sdc_images {
+  my $image_list = qx/ sdc-listimages /;
+  my $json = JSON->new->utf8->pretty->allow_nonref;
+  $sdc_images = $json->decode( $image_list );
+}
+
 sub sdc_machines {
   my $machine_list = qx/ sdc-listmachines /;
   my $json = JSON->new->utf8->pretty->allow_nonref;
@@ -107,6 +114,7 @@ sub execute {
     $tb   = Text::Table->new( "UUID", "TYPE", "RAM", "IMAGE", "ALIAS", "IP", "ROLE" );
   }
 
+  sdc_images();
   chef_metadata();
 
   my $machines = sdc_machines();
@@ -123,7 +131,7 @@ sub execute {
 
     my ( $role, $chef_env ) = chef_role( $vm->{primaryIp} );
 
-    get_image( $vm->{ image } );
+    my $image_text = get_image( $vm->{ image } );
 
     if ( $opt->all ) {
       $tb->add(
@@ -131,7 +139,7 @@ sub execute {
         $machine_types{ $vm->{type} },
         $vm->{memory},
         $vm->{package},
-        $images{ $vm->{ image } },
+        $image_text,
         $firewall,
         $vm->{state},
         $vm->{name},
@@ -144,7 +152,7 @@ sub execute {
         $vm->{id},
         $machine_types{ $vm->{type} },
         $vm->{memory},
-        $images{ $vm->{ image } },
+        $image_text,
         $vm->{name},
         $vm->{primaryIp},
         $role,
