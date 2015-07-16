@@ -24,15 +24,30 @@ sub validate_args {
 }
 
 sub image_whitelist {
-  my $image_data = qx/ knife data bag show tokamak images -Fj 2> \/dev\/null /;
+  my $cmd   = qx/ knife data bag show tokamak images -Fj 2> \/dev\/null /;
   my $json = JSON->new->utf8->pretty->allow_nonref;
-  my $images_json = $json->decode( $image_data );
+  my $images_json = $json->decode( $cmd );
   
   return @{$images_json->{list}};
 }
 
+sub default_image {
+  my $type = shift;
+
+  my $cmd = qx/ knife data bag show tokamak images -Fj 2> \/dev\/null /;
+  my $json = JSON->new->utf8->pretty->allow_nonref;
+  my $images_json = $json->decode( $cmd );
+
+  return $images_json->{defaults}->{$type};
+}
+
+# XXX TODO
+sub get_uuid_from_name {
+  my $name = shift;
+}
+
 sub sdc_images {
-  my @image_whitelist = @_;
+  my @image_whitelist = image_whitelist();
 
   my $image_list = qx/ sdc-listimages /;
   my $json = JSON->new->utf8->pretty->allow_nonref;
@@ -82,9 +97,7 @@ sub sdc_images {
 sub execute {
   my ($self, $opt, $args) = @_;
 
-  my @image_whitelist = image_whitelist();
-
-  my %images = sdc_images(@image_whitelist);
+  my %images = sdc_images();
 
   my $tb   = Text::Table->new( "UUID", "TYPE", "OS", "ROLE", "NAME", "VERSION" );
 

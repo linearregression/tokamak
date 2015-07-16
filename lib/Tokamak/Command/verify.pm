@@ -9,7 +9,7 @@ use Text::Table;
 
 =head1 NAME
 
-Tokamak::Command::verify - verify your admin config
+Tokamak::Command::verify - verify your admin config (TODO)
 
 =cut
 

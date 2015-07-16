@@ -4,6 +4,7 @@ use Tokamak -command;
 use strict;
 use warnings;
 
+use Carp;
 use JSON;
 use Text::Table;
 
@@ -45,30 +46,70 @@ sub sdc_packages {
   }
 }
 
+sub default_size {
+  my $type = shift;
+
+  my %packages = size_aliases();
+
+  return $packages{$type}{default};
+}
+
+sub get_uuid_from_name {
+  my ( $type, $alias ) = @_;
+
+  my %packages = size_aliases();
+
+  foreach my $key ( keys %packages ) {
+
+    next if $key eq "default_size";
+
+    if ( exists $packages{$key}{alias} ) {
+      if ( $alias eq $packages{$key}{alias} ) {
+        return $key;
+      }
+
+      if ( $alias eq $key ) {
+        return $key;
+      }
+    }
+  }
+
+  # No matching alias.
+  croak "ERROR: $alias is not a valid package size.\n";
+}
+
 sub size_aliases {
   my $cmd = qx/ knife data bag show tokamak sizes -Fj 2> \/dev\/null /;
   my $json = JSON->new->utf8->pretty->allow_nonref;
   my $sizes = $json->decode( $cmd );
 
-  sdc_packages();
+  $packages{ default_size } = $sizes->{ default_size };
   
   foreach my $type ( keys %{$sizes->{sizes}} ) {
     foreach my $key ( keys %{$sizes->{sizes}->{$type}} ) {
       $packages{ $sizes->{sizes}->{$type}->{$key} }{ alias } = $key;
       $packages{ $sizes->{sizes}->{$type}->{$key} }{ type }  = $type;
+
+      if ( $packages{ default_size } eq $key ) {
+        $packages{ $type }{ default } = $sizes->{sizes}->{$type}->{$key};
+      }
     }
   }
+
+  return %packages;
 }
 
 sub execute {
   my ($self, $opt, $args) = @_;
 
+  sdc_packages();
   size_aliases();
 
   my $tb   = Text::Table->new( "UUID", "CPU", "RAM", "TYPE", "NAME", "ALIAS" );
 
   foreach my $key ( keys %packages ) {
-    if ( $packages{$key}{alias} ) {
+    next if $key eq "default_size";
+    if ( $packages{$key}->{alias} ) {
       $tb->add (
         $key,
         $packages{$key}->{cpu},

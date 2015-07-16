@@ -11,21 +11,14 @@ Tokamak
 =cut
 
 use Carp;
+use Tokamak::Config;
 
-my $config_file = $ENV{HOME} . "/.tokamakrc";
+my $config_hash = Tokamak::Config::load_config();
 
-use Config::INI::Reader;
-
-unless ( -e $config_file ) {
-  croak "FATAL: Could not find ~/.tokamakrc.\n\n"; 
-}
-
-my $config_hash = Config::INI::Reader->read_file($ENV{HOME} . '/.tokamakrc');
-
-my $sdc_default   = $config_hash->{core}->{sdc_default};
-$ENV{SDC_ACCOUNT} = $config_hash->{ $sdc_default }->{ SDC_ACCOUNT };
-$ENV{SDC_URL}     = $config_hash->{ $sdc_default }->{ SDC_URL };
-$ENV{SDC_KEY_ID}  = $config_hash->{ $sdc_default }->{ SDC_KEY_ID };
+my $default_env   = $config_hash->{core}->{default_environment};
+$ENV{SDC_ACCOUNT} = $config_hash->{ $default_env }->{ SDC_ACCOUNT };
+$ENV{SDC_URL}     = $config_hash->{ $default_env }->{ SDC_URL };
+$ENV{SDC_KEY_ID}  = $config_hash->{ $default_env }->{ SDC_KEY_ID };
 
 print "% " . $ENV{SDC_ACCOUNT} . " @ " . $ENV{SDC_URL} . "\n";
 print "\n";
