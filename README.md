@@ -40,37 +40,6 @@ See `tokamakrc.example`.
 
 ## Installation
 
-### Carton from the CPAN
-
-`tokamak` uses a Perl module called Carton to localize its depenencies. If you've used `bundler` in Ruby, same idea.
-
-If your OS does not offer a `p5-Carton` package, you can install it from the CPAN easily.
-
-You will likely want to accept the defaults CPAN offers for your distribution.
-
-```
-cpan
-> o conf prerequisites_policy follow
-> o commit
-> install Carton
-> exit
-```
-
-If Carton installs successfully but is not contained in your default `$PATH`,
-you may need to look for it in one of your Perl's `@INC` bindirs. This tends to
-be very distro-specific, so you might try:
-
-```
-find /opt/local -name carton
-find /usr -name carton
-```
-
-And then add the resulting directory to your `PATH`:
-
-```
-export PATH=/opt/local/lib/perl5/site_perl/bin:/opt/chef/bin
-```
-
 ### SmartOS 
 
 ```
@@ -93,6 +62,42 @@ apt-get install build-essenetial git
 ```
 
 ### OS X
+
+You will need to install the XCode tools to get `gcc`, `git`, et al.
+
+
+### Carton from the CPAN
+
+`tokamak` uses a Perl module called Carton to localize its depenencies. If you've used `bundler` in Ruby, same idea.
+
+If your OS does not offer a `p5-Carton` package, you can install it from the CPAN easily.
+
+You will likely want to accept the defaults CPAN offers for your distribution.
+
+(`cpan` might ask you to use `local::lib`, `sudo`, or `manual`. Choose `sudo`.)
+
+```
+sudo cpan
+> o conf prerequisites_policy follow
+> o commit
+> install Carton
+> exit
+```
+
+If Carton installs successfully but is not contained in your default `$PATH`,
+you may need to look for it in one of your Perl's `@INC` bindirs. This tends to
+be very distro-specific, so you might try:
+
+```
+find /opt/local -name carton
+find /usr -name carton
+```
+
+And then add the resulting directory to your `PATH`:
+
+```
+export PATH=/opt/local/lib/perl5/site_perl/bin:/opt/chef/bin
+```
 
 ### Building tokamak
 

@@ -34,12 +34,11 @@ sub validate_args {
 sub execute {
   my ($self, $opt, $args) = @_;
 
-  # loop for 30s 
+  # XXX Check if machine exists.
 
   my $id = $args->[0];
   print "Destroying $id: ";
 
-  # XXX Check if machine exists.
 
   my $destroy = `sdc-deletemachine $id 2> /dev/null`;
 
