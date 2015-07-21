@@ -40,23 +40,63 @@ See `tokamakrc.example`.
 
 ## Installation
 
-`tokamak` is written in Perl, utilizing `App::Cmd` and `Carton` to deliver a bundled, easy to develop program.
+### Carton from the CPAN
 
-On SmartOS, the following will get you ready to hack on `tokamak`:
+`tokamak` uses a Perl module called Carton to localize its depenencies. If you've used `bundler` in Ruby, same idea.
+
+If your OS does not offer a `p5-Carton` package, you can install it from the CPAN easily.
+
+You will likely want to accept the defaults CPAN offers for your distribution.
+
+```
+cpan
+> o conf prerequisites_policy follow
+> o commit
+> install Carton
+> exit
+```
+
+If Carton installs successfully but is not contained in your default `$PATH`,
+you may need to look for it in one of your Perl's `@INC` bindirs. This tends to
+be very distro-specific, so you might try:
+
+```
+find /opt/local -name carton
+find /usr -name carton
+```
+
+And then add the resulting directory to your `PATH`:
+
+```
+export PATH=/opt/local/lib/perl5/site_perl/bin:/opt/chef/bin
+```
+
+### SmartOS 
 
 ```
 pkgin -y up
 pkgin -y in build-essential
 
 npm install -g smartdc
+```
 
-cpan
-> sudo
-> install Carton
-> exit
+### Arch Linux
 
-export PATH=/opt/local/lib/perl5/site_perl/bin:/opt/chef/bin
+```
+pacman base-devel git
+```
 
+### Debian
+
+```
+apt-get install build-essenetial git
+```
+
+### OS X
+
+### Building tokamak
+
+```
 git clone git@github.com:helium/tokamak.git
 cd tokamak
 carton install
