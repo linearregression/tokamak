@@ -52,7 +52,7 @@ npm install -g smartdc
 ### Arch Linux
 
 ```
-pacman base-devel git
+pacman -Sy base-devel git
 ```
 
 ### Debian
