@@ -1,8 +1,10 @@
 # tokamak
 
-## helium container management
+## SDC container management
 
-`tokamak` allows you to manage containers on Helium's SmartDatacenter infrastructure service.
+`tokamak` allows you to manage containers on Joyent's SmartDatacenter infrastructure service.
+
+`tokamak` is still under initial development. While basic functionality exists, quite a bit more is planned. Please see the GitHub Issues page.
 
 ## Usage
 
@@ -24,13 +26,17 @@ Available commands:
     verify: verify your admin config
 ```
 
-See https://gist.github.com/bdha/ba7ce117cb246eeed0fc for examples.
+See https://gist.github.com/bdha/bf01aa871e9f9839b10d for examples.
 
 ## Requirements
 
-`tokamak` requires access to SDC and Helium's Chef account.
+Perl.
 
-You must have a working Chef setup for the Helium Hosted Chef account.
+`tokamak` currently requires Chef for shared configuration (and will soon support bootstrapping containers on creation.)
+
+You must have a working Chef setup.
+
+The Joyent `smartdc` tools, installed from `npm`.
 
 ## Configuration
 
