@@ -115,7 +115,7 @@ pacman -Sy base-devel git
 ### Debian
 
 ```
-apt-get install build-essenetial git
+apt-get install build-essential git
 ```
 
 ### OS X
