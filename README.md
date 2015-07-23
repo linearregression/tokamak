@@ -166,3 +166,5 @@ cd local/lib/perl5
 ln -s ../../../lib/Tokamak* .
 cd ../../..
 ```
+
+`carton exec ./tokamak` should now be ready for use.
