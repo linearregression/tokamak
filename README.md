@@ -44,7 +44,58 @@ You must configure `~/.tokamakrc` to contain your SDC auth information. You will
 
 See `tokamakrc.example`.
 
-## Installation
+## Configuration Setup
+
+You will need to create several data bags in Chef:
+
+* `tokamak::images`
+
+```
+{
+  "id": "images",
+  "comment": "Whitelisted SDC images",
+  "list": [
+    "b67492c2-055c-11e5-85d8-8b039ac981ec",
+    "39f29a9e-cd82-11e4-bd38-0fed3261fa5f",
+    "5683089c-d18d-11e4-b067-9f59180479b9",
+    "e312a72c-0a18-11e5-9a87-9ba4a03d4234",
+    "8777db28-d302-11e4-8cf2-8793bd757e0f",
+    "4cbd2426-dee6-11e4-8ae3-b38f8b943cbe",
+    "82d952c4-1b7b-11e5-a299-bb55cb08eab1",
+    "d8d81aee-20cf-11e5-8503-2bc101a1d577"
+  ],
+  "defaults": {
+    "os": "b67492c2-055c-11e5-85d8-8b039ac981ec",
+    "kvm": "4cbd2426-dee6-11e4-8ae3-b38f8b943cbe",
+    "lx": "82d952c4-1b7b-11e5-a299-bb55cb08eab1"
+  }
+}
+```
+
+* `tokamak::sizes`
+
+```
+{
+  "id": "sizes",
+  "comment": "Image sizes",
+  "default_size": "small",
+  "sizes": {
+    "os": {
+      "tiny":  "860bac7b-1925-e3ff-b078-88e01549b211",
+      "small": "a08dfe7f-e9a8-49a6-908d-6d51dd63a012",
+      "medium": "1f8ea056-9777-42ac-ace4-70b3d9465955",
+      "large": "5e464cac-f7d1-41ec-accb-f7d6f1576393"
+    },
+    "kvm": {
+      "small": "0f37c8fe-a18d-4ce2-bfdd-7074acb16275",
+      "medium": "acc59c2a-20cb-4a12-b848-28445a185cd9",
+      "large": "881ca665-0953-4779-8764-5fcb914e240d"
+    }
+  }
+}
+```
+
+## Client Installation
 
 ### SmartOS 
 
