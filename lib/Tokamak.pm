@@ -4,6 +4,10 @@ package Tokamak;
 
 use App::Cmd::Setup -app;
 
+use lib "$ENV{'HOME'}/.tokamak/lib";
+
+#sub plugin_search_path { my ($self) = @_; my $path = $self->SUPER::plugin_search_path; push @$path, "Tokamak::Extra"; return $path }
+
 =head1 NAME
 
 Tokamak
@@ -26,7 +30,7 @@ print "\n";
 sub plugin_search_path {
   my ($self) = @_;
 
-  return [ 'Tokamak::Command' ];
+  return [ 'Tokamak::Command', 'Tokamak::Extra' ];
 }
 
 1;
