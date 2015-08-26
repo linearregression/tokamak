@@ -26,6 +26,7 @@ sub opt_spec {
 
   [ "size|s=s",    "size alias or UUID" ],
   [ "image|i=s",   "image alias or UUID" ],
+  [ "json|j",      "json output" ],
 }
 
 sub validate_args {
@@ -72,7 +73,7 @@ sub execute {
 
   my $obj = $json->decode($cmd);
 
-  print "Creating $alias " . $obj->{id} . ": ";
+  print "Creating $alias " . $obj->{id} . ": " unless $opt->{json};
 
   my $i = 0;
   while ( $i <=90 ) {
@@ -82,15 +83,21 @@ sub execute {
     my $obj = $json->decode($cmd);
 
     if ( $obj->{state} ne "running" ) {
-      print ".";
+      unless ( $opt->{json} ) {
+        print ".";
+      }
     }
     else {
-      print "done (" . $i . "s).\n";
-      print "\n";
+      if ( $opt->{json} ) {
+        print "$cmd";
+      } else {
+        print "done (" . $i . "s).\n";
+        print "\n";
 
-      print "Host: ";
-      print $obj->{primaryIp} . ": ";
-      print $obj->{id} . "\n";
+        print "Host: ";
+        print $obj->{primaryIp} . ": ";
+        print $obj->{id} . "\n";
+      }
 
       last;
     }
