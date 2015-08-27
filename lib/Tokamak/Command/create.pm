@@ -26,6 +26,7 @@ sub opt_spec {
 
   [ "size|s=s",    "size alias or UUID" ],
   [ "image|i=s",   "image alias or UUID" ],
+  [ "role|r=s",    "Chef role (must exist)" ],
   [ "json|j",      "json output" ],
 }
 
@@ -54,6 +55,48 @@ sub validate_args {
   $opt->{network_uuid} = Tokamak::Command::networks::default_network();
 }
 
+sub chef_bootstrap {
+  my ( $uuid, $alias, $ip, $role ) = @_;
+
+  my $config_hash = Tokamak::Config::load_config();
+  my $default_env = $config_hash->{ core }->{ default_environment };
+  my $chef_env    = $config_hash->{ $default_env }->{ CHEF_ENV };
+
+  my $knife_role = "-r 'role[$role]'";
+
+  my $check_role = Tokamak::Command::roles::role_exists( $role );
+
+  if ( $check_role == 1 ) {
+    warn "% CHEF $role does not exist. Bootstrapping with no run_list.\n";
+    $knife_role = "";
+  }
+
+  print "% CHEF bootstrap: host:$alias ip:$ip\n";
+  print "% CHEF bootstrap: role:$role\n";
+  print "% CHEF bootstrap: chef_env:$chef_env\n";
+
+  my $bootstrap = qx/knife bootstrap $ip -A -E $chef_env -N $alias -x root $knife_role 2>&1 /;
+
+  if ( $? == 0 ) {
+    print "% CHEF bootstrap: complete.\n";
+
+    set_sdc_tag( $uuid, "chef_role", $role );
+    set_sdc_tag( $uuid, "chef_env",  $chef_env );
+  } else {
+    # XXX print this to a log file
+    print "% CHEF bootstrap: failed.\n";
+    print $bootstrap;
+  }
+}
+
+# XXX Move this to tags.pm
+sub set_sdc_tag {
+  my ( $uuid, $key, $value ) = @_;
+
+  print "% SDC  tag $key=$value\n";
+  my $machinetag = qx/sdc-addmachinetags --tag "$key=$value" $uuid/;
+}
+
 sub execute {
   my ($self, $opt, $args) = @_;
 
@@ -73,8 +116,9 @@ sub execute {
 
   my $obj = $json->decode($cmd);
 
-  print "Creating $alias " . $obj->{id} . ": " unless $opt->{json};
-
+  print "% SDC  creating $alias " . $obj->{id} . ": " unless $opt->{json};
+  
+  # XXX Move this to waitfor()
   my $i = 0;
   while ( $i <=90 ) {
 
@@ -92,11 +136,19 @@ sub execute {
         print "$cmd";
       } else {
         print "done (" . $i . "s).\n";
-        print "\n";
+      }
 
-        print "Host: ";
-        print $obj->{primaryIp} . ": ";
-        print $obj->{id} . "\n";
+      # Only bootstrap with Chef if a role is defined by the user.
+      if ( $opt->{role} ) {
+        # XXX wait_for_ssh()
+        sleep 10;
+        chef_bootstrap( $obj->{id}, $alias, $obj->{primaryIp}, $opt->{role} );
+      }
+
+      unless ( $opt->{json} ) {
+        print "\n";
+        print "IP:   " . $obj->{primaryIp} . "\n";
+        print "UUID: " . $obj->{id} . "\n\n";
       }
 
       last;
@@ -105,6 +157,7 @@ sub execute {
     $i++;
     sleep 1;
   }
+
 }
 
 1;
