@@ -80,8 +80,12 @@ sub chef_bootstrap {
   if ( $? == 0 ) {
     print "% CHEF bootstrap: complete.\n";
 
+    set_chef_tag( $alias, "sdc_uuid", $uuid );
+
     set_sdc_tag( $uuid, "chef_role", $role );
     set_sdc_tag( $uuid, "chef_env",  $chef_env );
+
+
   } else {
     # XXX print this to a log file
     print "% CHEF bootstrap: failed.\n";
@@ -95,6 +99,14 @@ sub set_sdc_tag {
 
   print "% SDC  tag $key=$value\n";
   my $machinetag = qx/sdc-addmachinetags --tag "$key=$value" $uuid/;
+
+}
+
+sub set_chef_tag {
+  my ( $alias, $key, $value ) = @_;
+
+  print "% CHEF tag $key=$value\n";
+  my $cheftag = qx/knife tag create $alias $key=$value 2>&1/;
 }
 
 sub execute {
