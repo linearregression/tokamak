@@ -4,6 +4,7 @@ use Tokamak -command;
 use strict;
 use warnings;
 
+use Carp;
 use JSON;
 use Text::Table;
 
@@ -44,6 +45,18 @@ sub get_roles {
     }
 
     $i++;
+  }
+}
+
+sub role_exists {
+  my $role = shift;
+
+  get_roles();
+
+  if ( $roles{$role} ) {
+    return 0;
+  } else {
+    return 1;
   }
 }
 
