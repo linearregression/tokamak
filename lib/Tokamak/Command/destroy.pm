@@ -4,9 +4,10 @@ use Tokamak -command;
 use strict;
 use warnings;
 
-use JSON;
+use Tokamak::Config;
 
-use Data::Printer;
+use Carp;
+use JSON;
 
 =head1 NAME
 
@@ -35,12 +36,19 @@ sub validate_args {
 sub remove_route53_record {
   my $ip = shift;
 
-  my $name = qx/carton exec .\/local\/bin\/route53 -keyname default record list helium.team. | grep $ip | awk '{print \$1}'/;
-  chomp $name;
+  my $config_hash = Tokamak::Config::load_config();
+  my $default_env = $config_hash->{ core }->{ default_environment };
+  my $domain      = $config_hash->{ $default_env }->{ DOMAIN };
 
-  if ( $name ) {
-    print "% DNS  Deleting DNS record: $name ($ip)\n";
-    my $cmd = qx/carton exec .\/local\/bin\/route53 -keyname default record delete helium.team. --name $name --type A/;
+  # If we have route53 configured, clean up.
+  if ( $domain ) {
+    my $name = qx/carton exec .\/local\/bin\/route53 -keyname default record list $domain. | grep $ip | awk '{print \$1}'/;
+    chomp $name;
+
+    if ( $name ) {
+      print "% DNS  Deleting DNS record: $name ($ip)\n";
+      my $cmd = qx/carton exec .\/local\/bin\/route53 -keyname default record delete $domain. --name $name --type A/;
+    }
   }
 }
 
