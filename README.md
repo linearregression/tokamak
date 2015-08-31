@@ -136,7 +136,7 @@ You will likely want to accept the defaults CPAN offers for your distribution.
 ```
 sudo cpan
 > o conf prerequisites_policy follow
-> o commit
+> o conf commit
 > install Carton
 > exit
 ```

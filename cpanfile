@@ -6,4 +6,4 @@ requires 'Capture::Tiny';
 requires 'Net::Amazon::Route53';
 requires 'Mouse';
 requires 'Params::Validate';
-requires 'Capture::Tiny';
+requires 'Capture::Tiny::Extended';

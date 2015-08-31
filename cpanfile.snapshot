@@ -1,5 +1,18 @@
 # carton snapshot format: version 1.0
 DISTRIBUTIONS
+  Capture-Tiny-Extended-0.114
+    pathname: M/MI/MITHALDU/Capture-Tiny-Extended-0.114.tar.gz
+    provides:
+      Capture::Tiny::Extended 0.114
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.30
+      File::Find 0
+      File::Spec 0
+      File::Temp 0
+      IO::Handle 0
+      Test::More 0.62
   Devel-PPPort-3.31
     pathname: W/WO/WOLFSAGE/Devel-PPPort-3.31.tar.gz
     provides:

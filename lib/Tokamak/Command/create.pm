@@ -10,6 +10,7 @@ use Tokamak::Constants;
 use Carp;
 use JSON;
 use Data::Printer;
+use Capture::Tiny ':all';
 
 =head1 NAME
 
@@ -75,21 +76,28 @@ sub chef_bootstrap {
   print "% CHEF bootstrap: role:$role\n";
   print "% CHEF bootstrap: chef_env:$chef_env\n";
 
-  my $bootstrap = qx/knife bootstrap $ip -A -E $chef_env -N $alias -x root $knife_role 2>&1 /;
+  
+  my ($merged, $exit) = capture_merged {
+    system("knife bootstrap $ip -A -E $chef_env -N $alias -x root -F min $knife_role");
+  };
+
+  my $logdir = "$ENV{HOME}/.tokamak/logs/$uuid";
+  my $logfile = "$logdir/chef_bootstrap.log";
+  my $mkdir = qx/mkdir -p $logdir/;
+
+  open(CHEF_OUT, ">$logfile");
+  print CHEF_OUT $merged;
+  close(CHEF_OUT); 
 
   if ( $? == 0 ) {
-    print "% CHEF bootstrap: complete.\n";
+    print "% CHEF bootstrap: complete. See: $logfile\n";
 
     set_chef_tag( $alias, "sdc_uuid", $uuid );
 
     set_sdc_tag( $uuid, "chef_role", $role );
     set_sdc_tag( $uuid, "chef_env",  $chef_env );
-
-
   } else {
-    # XXX print this to a log file
-    print "% CHEF bootstrap: failed.\n";
-    print $bootstrap;
+    print "% CHEF bootstrap: FAILED. See: $logfile\n";
   }
 }
 
