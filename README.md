@@ -34,9 +34,17 @@ Perl.
 
 `tokamak` currently requires Chef for shared configuration (and will soon support bootstrapping containers on creation.)
 
-You must have a working Chef setup.
+You must have a working Chef setup. You can install this via `gem install chef` or by getting a package from https://downloads.chef.io/chef-client/.
 
-The Joyent `smartdc` tools, installed from `npm`.
+The Joyent `smartdc` tools, installed from `npm`, ie,
+
+```
+apt-get install curl
+curl --silent --location https://deb.nodesource.com/setup_0.12 | bash -
+apt-get install nodejs
+npm install -g smartdc json
+```
+
 
 ## Configuration
 
