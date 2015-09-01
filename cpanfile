@@ -7,3 +7,4 @@ requires 'Net::Amazon::Route53';
 requires 'Mouse';
 requires 'Params::Validate';
 requires 'Capture::Tiny::Extended';
+requires 'Mozilla::CA';
