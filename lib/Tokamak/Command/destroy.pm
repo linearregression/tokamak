@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Tokamak::Config;
+use Tokamak::SDC::Machines;
 
 use Carp;
 use JSON;
@@ -64,9 +65,8 @@ sub remove_chef_record {
     $chef_name = $k;
   }
 
-  chomp $chef_name;
-
   if ( $chef_name ) {
+    chomp $chef_name;
     print "% CHEF Deleting $chef_name\n";
     my $cleanup = qx/knife node delete "$chef_name" -y ; knife client delete "$chef_name" -y/;
   }
@@ -75,15 +75,18 @@ sub remove_chef_record {
 sub destroy_machine {
   my $id = shift;
 
-  print "% SDC  Destroying $id: ";
+  # $id may be truncated for UX reasons. Get the full UUID.
+  my $uuid = Tokamak::SDC::Machines::match_id($id);
 
-  my $destroy = `sdc-deletemachine $id 2> /dev/null`;
+  print "% SDC  Destroying $uuid: ";
+
+  my $destroy = `sdc-deletemachine $uuid 2> /dev/null`;
 
   my $i = 0;
   while ( $i <=30 ) {
     my $json = JSON->new->utf8->pretty->allow_nonref;
 
-    my $cmd = `sdc-getmachine $id 2> /dev/null`;
+    my $cmd = `sdc-getmachine $uuid 2> /dev/null`;
 
     if ( $? != 768 ) {
       print ".";
@@ -102,16 +105,19 @@ sub execute {
 
   my $id = $args->[0];
 
-  my $machine = `sdc-getmachine $id`;
+  # $id may be truncated for UX reasons. Get the full UUID.
+  my $uuid = Tokamak::SDC::Machines::match_id($id);
+  my $machine = `sdc-getmachine $uuid`;
+
   my $json = JSON->new->utf8->pretty->allow_nonref;
   my $obj  = $json->decode($machine); 
 
   if ($machine) { 
     remove_route53_record($obj->{primaryIp});
     remove_chef_record($obj->{primaryIp});
-    destroy_machine($id);
+    destroy_machine($uuid);
   } else {
-    print "% Machine $id not found.\n";
+    print "% Machine $uuid not found.\n";
     exit 1;
   }
 }

@@ -108,10 +108,10 @@ sub execute {
   my $tb;
 
   if ( $opt->all ) {
-    $tb   = Text::Table->new( "UUID", "TYPE", "RAM", "PACKAGE", "IMAGE", "FW", "STATE", "ALIAS", "IP", "ROLE", "ENVIRONMENT" );
+    $tb   = Text::Table->new( "ID", "VT", "RAM", "PACKAGE", "IMAGE", "FW", "STATE", "ALIAS", "IP", "ROLE", "ENVIRONMENT" );
   }
   else {
-    $tb   = Text::Table->new( "UUID", "TYPE", "RAM", "IMAGE", "ALIAS", "IP", "ROLE" );
+    $tb   = Text::Table->new( "ID", "VT", "RAM", "IMAGE", "ALIAS", "IP", "ROLE" );
   }
 
   sdc_images();
@@ -128,6 +128,9 @@ sub execute {
     if ( $vm->{firewall_enabled} ) {
       $firewall = "Y";
     }
+
+    my $vm_id = $vm->{id};
+    $vm_id =~ s/-.*$//;
 
     my ( $role, $chef_env ) = chef_role( $vm->{primaryIp} );
 
@@ -149,7 +152,7 @@ sub execute {
     }
     else {
       $tb->add(
-        $vm->{id},
+        $vm_id,
         $machine_types{ $vm->{type} },
         $vm->{memory},
         $image_text,
