@@ -7,6 +7,8 @@ use warnings;
 use JSON;
 use Text::Table;
 
+use Tokamak::Config;
+
 use Data::Printer;
 
 =head1 NAME
@@ -16,11 +18,16 @@ Tokamak::Command::ps - list containers
 =cut
 
 sub opt_spec {
-  [ "all|a", "verbose output, show all containers" ]
+  [ "all|a", "verbose output, show all containers" ],
+  [ "env|E=s", "override default environment" ],
 }
 
 sub validate_args {
   my ($self, $opt, $args) = @_;
+
+  if ( $opt->{env} ) {
+    Tokamak::Config::set_sdc_env( $opt->{env} );
+  }
 }
 
 my %machine_types;
