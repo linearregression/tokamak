@@ -1,3 +1,4 @@
 local/
 nytprof.out
 nytprof
+cpanfile.snapshot
