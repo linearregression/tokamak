@@ -47,7 +47,7 @@ sub validate_args {
   }
 
   if ( $opt->{image}) {
-    $opt->{image_uuid} = Tokamak::Command::images::get_uuid_from_name( $opt->{type} );
+    $opt->{image_uuid} = Tokamak::Command::images::get_uuid_from_name( $opt->{image} );
   }
   else {
     $opt->{image_uuid} = Tokamak::Command::images::default_image( $opt->{type} );
@@ -76,7 +76,6 @@ sub chef_bootstrap {
   print "% CHEF bootstrap: role:$role\n";
   print "% CHEF bootstrap: chef_env:$chef_env\n";
 
-  
   my ($merged, $exit) = capture_merged {
     system("knife bootstrap $ip -A -E $chef_env -N $alias -x root -F min $knife_role");
   };
