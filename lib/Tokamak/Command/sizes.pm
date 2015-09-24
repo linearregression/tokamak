@@ -62,8 +62,12 @@ sub get_uuid_from_name {
   foreach my $key ( keys %packages ) {
 
     next if $key eq "default_size";
-
+    next if $key eq "kvm";
+    next if $key eq "os";
+    
     if ( exists $packages{$key}{alias} ) {
+      next if $packages{$key}{type} ne $type;
+
       if ( $alias eq $packages{$key}{alias} ) {
         return $key;
       }
